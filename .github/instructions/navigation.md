@@ -5,7 +5,7 @@ A `PageRouteInfo` object will be generated for every declared **AutoRoute**. The
 ```dart
 class BookListRoute extends PageRouteInfo {
   const BookListRoute({
-    List<PagerouteInfo>? children,
+    List<PageRouteInfo>? children,
   }) : super(name, initialChildren: children);
 
   static const String name = 'BookListRoute';
