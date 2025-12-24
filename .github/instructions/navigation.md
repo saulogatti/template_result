@@ -77,7 +77,7 @@ context.router.removeLast();
 // removes any route in stack that satisfies the predicate
 // this works exactly like removing items from a regular List
 // <PageRouteInfo>[...].removeWhere((r)=>)
-context.router.removeWhere((route) => );
+context.router.removeWhere((route) => route.settings.name == 'MyRoute');
 // you can also use the common helper methods from context extension to navigate
 context.pushRoute(const BooksListRoute());
 context.replaceRoute(const BooksListRoute());
