@@ -6,8 +6,7 @@ final class Failure<S, F> extends Result<S, F> {
 /// Uma implementação leve do padrão Result para Clean Architecture.
 /// Usa sealed classes do Dart 3 para garantir tratamento exaustivo.
 ///
-/// [S] é o tipo de sucesso [Success.value] e deve estender [Object]. Isso garante
-/// que o valor de sucesso não seja nulo.
+/// [S] é o tipo de sucesso [Success.value].
 /// [F] é o tipo de falha [Failure.error].
 sealed class Result<S, F> {
   const Result();
@@ -45,11 +44,15 @@ sealed class Result<S, F> {
   /// Alias semântico para [fold], mantido por legibilidade e familiaridade
   /// com APIs de pattern matching (por exemplo, `when` em outras linguagens).
   /// Útil especialmente em Widgets/Blocs; em código novo, prefira usar [fold].
-  T when<T extends Object>(T Function(S value) onSuccess, T Function(F error) onFailure) =>
-      fold<T>(onSuccess: onSuccess, onFailure: onFailure);
+  T when<T extends Object>(
+    T Function(S value) onSuccess,
+    T Function(F error) onFailure,
+  ) => fold<T>(onSuccess: onSuccess, onFailure: onFailure);
 
   /// Utilitário estático para envolver chamadas perigosas (try-catch)
-  static Future<Result<T, Exception>> guard<T extends Object>(Future<T> Function() block) async {
+  static Future<Result<T, Exception>> guard<T extends Object>(
+    Future<T> Function() block,
+  ) async {
     try {
       return Result<T, Exception>.success(await block());
     } on Exception catch (e) {
@@ -69,12 +72,14 @@ sealed class Result<S, F> {
   ///  return await fetchData();
   /// });
   /// ```
-  static Future<Result<T, F>> resultAsync<T, F extends Object>(Future<T> Function() action) async {
+  static Future<Result<T, F>> resultAsync<T, F extends Object>(
+    Future<T> Function() action,
+  ) async {
     try {
       final T value = await action();
       return Result<T, F>.success(value);
-    } catch (e) {
-      return Result<T, F>.failure(e as F);
+    } on F catch (e) {
+      return Result<T, F>.failure(e);
     }
   }
 }
@@ -86,13 +91,21 @@ final class Success<S, F> extends Result<S, F> {
 
 extension ResultExtension<S, F> on Result<S, F> {
   /// Flat maps a [Result] to a new [Result] with a different success type.
-  Result<R, F> flatMap<R extends Object>(Result<R, F> Function(S value) mapper) {
-    return fold<Result<R, F>>(onSuccess: mapper, onFailure: (F error) => Result<R, F>.failure(error));
+  Result<R, F> flatMap<R extends Object>(
+    Result<R, F> Function(S value) mapper,
+  ) {
+    return fold<Result<R, F>>(
+      onSuccess: mapper,
+      onFailure: (F error) => Result<R, F>.failure(error),
+    );
   }
 
   /// Flat maps a [Result] to a new [Result] with a different error type.
   Result<S, R> flatMapError<R>(Result<S, R> Function(F error) mapper) {
-    return fold(onSuccess: (S value) => Result<S, R>.success(value), onFailure: (F error) => mapper(error));
+    return fold(
+      onSuccess: (S value) => Result<S, R>.success(value),
+      onFailure: (F error) => mapper(error),
+    );
   }
 
   /// Maps a [Result] to a new [Result] with a different success type.
