@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:simple_result/core/usecases/usecase.dart';
+import 'package:simple_result/domain/usecases/usecase.dart';
 
 import '../../domain/entities/example_entity.dart';
 import '../../domain/usecases/get_example.dart';

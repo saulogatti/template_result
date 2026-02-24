@@ -1,4 +1,4 @@
-import '../../../../core/errors/exceptions.dart';
+import '../errors/exceptions.dart';
 import '../../domain/entities/example_entity.dart';
 import '../../domain/repositories/example_repository.dart';
 import '../datasources/example_remote_datasource.dart';
